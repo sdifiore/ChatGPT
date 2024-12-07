@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod core;
-use core::{cmd, setup};
+use core::{cmd, setup, window};
 
 fn main() {
     tauri::Builder::default()
@@ -20,6 +20,7 @@ fn main() {
             cmd::ask_sync,
             cmd::ask_send,
             cmd::set_theme,
+            window::open_settings,
         ])
         .setup(setup::init)
         .run(tauri::generate_context!())

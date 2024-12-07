@@ -26,6 +26,7 @@
     "webview:allow-set-webview-zoom",
     "webview:allow-create-webview",
     "webview:allow-create-webview-window",
+    "webview:allow-set-webview-focus",
     "event:default",
     "event:allow-emit",
     "event:allow-emit-to",

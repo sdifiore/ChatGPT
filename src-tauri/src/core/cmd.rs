@@ -71,11 +71,18 @@ pub fn ask_sync(app: AppHandle, message: String) {
 
 #[command]
 pub fn ask_send(app: AppHandle) {
-    app.get_window("core")
+    let win = app.get_window("core").unwrap();
+
+    win.get_webview("main")
         .unwrap()
-        .get_webview("main")
-        .unwrap()
-        .eval("ChatAsk.submit()")
+        .eval(
+            r#"
+        ChatAsk.submit();
+        setTimeout(() => {
+            __TAURI__.webview.Webview.getByLabel('ask')?.setFocus();
+        }, 500);
+        "#,
+        )
         .unwrap();
 }
 
@@ -107,20 +114,12 @@ pub fn set_view_ask(app: AppHandle, enabled: bool) {
     let ask_mode_height = if enabled { ASK_HEIGHT } else { 0.0 };
     let scale_factor = core_window.scale_factor().unwrap();
     let titlebar_height = (scale_factor * TITLEBAR_HEIGHT).round() as u32;
-    let win_size = core_window
-        .inner_size()
-        .expect("[core:window] Failed to get window size");
+    let win_size = core_window.inner_size().unwrap();
     let ask_height = (scale_factor * ask_mode_height).round() as u32;
 
-    let main_view = core_window
-        .get_webview("main")
-        .expect("[view:main] Failed to get webview window");
-    let titlebar_view = core_window
-        .get_webview("titlebar")
-        .expect("[view:titlebar] Failed to get webview window");
-    let ask_view = core_window
-        .get_webview("ask")
-        .expect("[view:ask] Failed to get webview window");
+    let main_view = core_window.get_webview("main").unwrap();
+    let titlebar_view = core_window.get_webview("titlebar").unwrap();
+    let ask_view = core_window.get_webview("ask").unwrap();
 
     if enabled {
         ask_view.set_focus().unwrap();
@@ -131,10 +130,10 @@ pub fn set_view_ask(app: AppHandle, enabled: bool) {
     let set_view_properties =
         |view: &tauri::Webview, position: LogicalPosition<f64>, size: PhysicalSize<u32>| {
             if let Err(e) = view.set_position(position) {
-                eprintln!("Failed to set view position: {}", e);
+                eprintln!("[cmd:view:position] Failed to set view position: {}", e);
             }
             if let Err(e) = view.set_size(size) {
-                eprintln!("Failed to set view size: {}", e);
+                eprintln!("[cmd:view:size] Failed to set view size: {}", e);
             }
         };
 

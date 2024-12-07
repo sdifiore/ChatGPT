@@ -20,7 +20,7 @@ use crate::core::{
 pub fn init(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let handle = app.handle();
 
-    let conf = &AppConf::load(handle).unwrap();
+    let conf = &AppConf::load(handle)?;
     let ask_mode_height = if conf.ask_mode { ASK_HEIGHT } else { 0.0 };
 
     template::Template::new(AppConf::get_scripts_path(handle)?);
@@ -95,12 +95,12 @@ pub fn init(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
 
             let titlebar_view = WebviewBuilder::new(
                 "titlebar",
-                WebviewUrl::App("index.html?type=titlebar".into()),
+                WebviewUrl::App("index.html".into()),
             )
             .auto_resize();
 
             let ask_view =
-                WebviewBuilder::new("ask", WebviewUrl::App("index.html?type=ask".into()))
+                WebviewBuilder::new("ask", WebviewUrl::App("index.html".into()))
                     .auto_resize();
 
             let win = window.lock().unwrap();
@@ -111,6 +111,7 @@ pub fn init(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
             #[cfg(target_os = "macos")]
             {
                 let main_area_height = win_size.height - titlebar_height;
+
                 win.add_child(
                     titlebar_view,
                     LogicalPosition::new(0, 0),

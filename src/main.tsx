@@ -1,16 +1,12 @@
-import { StrictMode, Suspense } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import Routes from './routes';
+// import Routes from './routes';
+import App from './App';
 import './base.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <BrowserRouter>
-      <Suspense fallback={null}>
-        <Routes />
-      </Suspense>
-    </BrowserRouter>
+    <App />
   </StrictMode>
 );

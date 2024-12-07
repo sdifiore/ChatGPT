@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrent } from '@tauri-apps/api/window';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 export default function useTheme() {
   const [theme, setTheme] = useState<string | null>('light'); // ['light', 'dark']
@@ -7,8 +7,9 @@ export default function useTheme() {
   useEffect(() => {
     let unlisten: Function;
     (async () => {
-      setTheme(await getCurrent().theme() || '');
-      unlisten = await getCurrent().onThemeChanged(({ payload: newTheme }) => {
+      let win = getCurrentWindow();
+      setTheme(await win.theme() || '');
+      unlisten = await win.onThemeChanged(({ payload: newTheme }) => {
         setTheme(newTheme);
       });
     })()
